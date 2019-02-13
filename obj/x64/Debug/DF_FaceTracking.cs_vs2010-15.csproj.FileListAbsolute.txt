@@ -11,3 +11,16 @@ C:\Users\Shahinur\Desktop\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs_vs
 C:\Users\Shahinur\Desktop\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.exe
 C:\Users\Shahinur\Desktop\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.pdb
 C:\Users\Shahinur\Desktop\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.ViewerWindow.resources
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\bin\x64\Debug\DF_FaceTracking.cs.exe.config
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\bin\x64\Debug\DF_FaceTracking.cs.exe
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\bin\x64\Debug\DF_FaceTracking.cs.pdb
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\bin\x64\Debug\libpxcclr.cs.dll
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs_vs2010-15.csprojAssemblyReference.cache
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.MainForm.resources
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.Properties.Resources.resources
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.ViewerWindow.resources
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs_vs2010-15.csproj.GenerateResource.cache
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs_vs2010-15.csproj.CoreCompileInputs.cache
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs_vs2010-15.csproj.CopyComplete
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.exe
+E:\OIP Lab\Research\Multiview Display System\DF_FaceTracking.cs\obj\x64\Debug\DF_FaceTracking.cs.pdb

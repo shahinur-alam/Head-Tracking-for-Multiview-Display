@@ -1,7 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DF_FaceTracking.cs", "DF_FaceTracking.cs_vs2010-15.csproj", "{DED2187A-52A5-466E-8B3D-BFF013770412}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DF_FaceTracking.cs_vs2010-15", "DF_FaceTracking.cs_vs2010-15.csproj", "{DED2187A-52A5-466E-8B3D-BFF013770412}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup Multiview Display", "..\Setup Multiview Display\Setup Multiview Display.vdproj", "{99EBA0D8-8F88-429A-BE85-731F002B345B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,8 +23,15 @@ Global
 		{DED2187A-52A5-466E-8B3D-BFF013770412}.Release|x64.Build.0 = Release|x64
 		{DED2187A-52A5-466E-8B3D-BFF013770412}.Release|x86.ActiveCfg = Release|x86
 		{DED2187A-52A5-466E-8B3D-BFF013770412}.Release|x86.Build.0 = Release|x86
+		{99EBA0D8-8F88-429A-BE85-731F002B345B}.Debug|x64.ActiveCfg = Debug
+		{99EBA0D8-8F88-429A-BE85-731F002B345B}.Debug|x86.ActiveCfg = Debug
+		{99EBA0D8-8F88-429A-BE85-731F002B345B}.Release|x64.ActiveCfg = Release
+		{99EBA0D8-8F88-429A-BE85-731F002B345B}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49B3AFA5-6488-46E4-87B5-1DE44F026985}
 	EndGlobalSection
 EndGlobal

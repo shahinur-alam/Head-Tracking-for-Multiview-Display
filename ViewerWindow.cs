@@ -33,10 +33,10 @@ namespace DF_FaceTracking.cs
 
         public void ReceiveFaceData(float yaw, float pitch)
         {
-            string filepath = "F:/Teddy_parallel/Bottom camera/Before/DSC01214.jpg";
+            //string filepath = "F:/Teddy_parallel/Bottom camera/Before/DSC01214.jpg";
             float viewingAngle,degreePerImage;
             viewingAngle = 15 * 2;
-            degreePerImage = viewingAngle / 71;
+            degreePerImage = viewingAngle / 65;
 
             //richTextBox1.Text= yaw.ToString();
             
@@ -50,11 +50,11 @@ namespace DF_FaceTracking.cs
                 imageNumber = (int)(yaw / degreePerImage);
                 if (yaw==0)
                 {
-                    imageNumber = 35; //Total Number of horizontal view divided by two.
+                    imageNumber = 32; //Total Number of horizontal view divided by two.
                 }
                 else
                 {
-                    imageNumber = 35 + imageNumber;
+                    imageNumber = 32 + imageNumber;
                 }
                 
                 //ImageViewer(filepath);
@@ -66,7 +66,7 @@ namespace DF_FaceTracking.cs
             }
             else if (yaw > 15) // Check wheather it is out of range in Right side
             {
-                imageNumber = 70;
+                imageNumber = 64;
             }
             else
             { }
@@ -83,11 +83,11 @@ namespace DF_FaceTracking.cs
             }
             else if (-2 > pitch) // Check wheather it is out of range in left side
             {
-                VerticalImageNumber = 1;
+                VerticalImageNumber = 2;
             }
             else if (pitch > 2) // Check wheather it is out of range in Right side
             {
-                VerticalImageNumber = 2;
+                VerticalImageNumber = 1;
             }
 
             ImageViewer(GenerateFilePath(imageNumber,VerticalImageNumber));
@@ -100,7 +100,7 @@ namespace DF_FaceTracking.cs
 
         public string GenerateFilePath(int imageNumber, int VerticalImageNumber)
         {
-            string FolderBasePath = "C:\\MultiviewImage\\";
+            string FolderBasePath = "C:\\StereoMultiviewImage\\";
             return FolderBasePath+ VerticalImageNumber+"-" +imageNumber+".jpg";
         }
 
@@ -120,7 +120,7 @@ namespace DF_FaceTracking.cs
             }
              catch(System.Exception)
             {
-                MessageBox.Show("File Not Found");
+                MessageBox.Show("File Not Found\n Please Keep The Stero Image in C drive with folder name StereoMultiviewImage");
             }
 
         }
