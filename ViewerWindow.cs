@@ -93,7 +93,7 @@ namespace DF_FaceTracking.cs
                 VerticalImageNumber = 1;
             }
             */
-            if(imageNumber!=GlobalImageNumber)
+            if(imageNumber!=GlobalImageNumber) // Check whether the state is idle or not
             {
                 ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber));
             }
