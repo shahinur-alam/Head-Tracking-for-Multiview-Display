@@ -14,6 +14,8 @@ namespace DF_FaceTracking.cs
 
     public partial class ViewerWindow : Form
     {
+        int GlobalImageNumber;
+        string ComboVal="BelleBall";
 
         public ViewerWindow()
         {
@@ -76,6 +78,7 @@ namespace DF_FaceTracking.cs
              * Generating File File number for vertical one view,
              * */
             int VerticalImageNumber = 0;
+            /*
             if (-2 <= pitch && pitch <= 2) // Check wheather the yaw value is in the range.
             {
                     VerticalImageNumber = 0; //Total Number of horizontal view divided by two.
@@ -89,19 +92,35 @@ namespace DF_FaceTracking.cs
             {
                 VerticalImageNumber = 1;
             }
-
-            ImageViewer(GenerateFilePath(imageNumber,VerticalImageNumber));
+            */
+            if(imageNumber!=GlobalImageNumber)
+            {
+                ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber));
+            }
+                
+         
             
             //richTextBox1.Text = "Degree Per Image: " + degreePerImage + "Yaw: " + yaw + " Pitch:"+pitch+" Image Number: " + imageNumber + "Vertical Im Num: "+VerticalImageNumber+" Original :" + degreePerImage * yaw+" Path"+ GenerateFilePath(imageNumber,VerticalImageNumber);
-            label1.Text = "Degree Per Image: " + degreePerImage + " Yaw: " + yaw + " Pitch:" + pitch + "Horizontal Image Number: " + imageNumber + " Vertical Image Number: " + VerticalImageNumber +" Image Path: " + GenerateFilePath(imageNumber, VerticalImageNumber);
+            label1.Text = "Degree Per Image: " + degreePerImage + " Yaw: " + yaw + " Pitch:" + pitch + "Horizontal Image Number: " + imageNumber +" "+GlobalImageNumber+ " Vertical Image Number: " + VerticalImageNumber +" Image Path: " + GenerateFilePath(imageNumber, VerticalImageNumber);
 
         }
 
 
         public string GenerateFilePath(int imageNumber, int VerticalImageNumber)
         {
-            string FolderBasePath = "C:\\StereoMultiviewImage\\";
-            return FolderBasePath+ VerticalImageNumber+"-" +imageNumber+".jpg";
+            int NormalizedImgNumber;
+            string FolderBasePath = "C:\\StereoMultiviewImage\\"+ComboVal+"\\14\\";
+            int ValueDiff = Math.Abs(imageNumber - GlobalImageNumber);
+            GlobalImageNumber = imageNumber;
+            if(ValueDiff>1)
+            {
+                NormalizedImgNumber = (GlobalImageNumber + imageNumber) / 2;
+            }
+            else
+            {
+                NormalizedImgNumber = GlobalImageNumber;
+            }
+            return FolderBasePath+ VerticalImageNumber+"-" + NormalizedImgNumber + ".jpg";
         }
 
 
@@ -120,7 +139,11 @@ namespace DF_FaceTracking.cs
             }
              catch(System.Exception)
             {
-                MessageBox.Show("File Not Found\n Please Keep The Stero Image in C drive with folder name StereoMultiviewImage");
+                //string msg=MessageBox.Show("File Not Found\n Please Keep The Stero Image in C drive with folder name StereoMultiviewImage",'Cancel', MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                if (MessageBox.Show("File Not Found\n Please Keep The Stero Image in C drive with folder name StereoMultiviewImage", "Exit?", MessageBoxButtons.OK) == System.Windows.Forms.DialogResult.OK)
+                {
+                    Application.Exit();
+                }
             }
 
         }
@@ -154,6 +177,11 @@ namespace DF_FaceTracking.cs
         {
             //this.Close();
             Application.Exit();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboVal = comboBox1.Text;
         }
     }
 }
