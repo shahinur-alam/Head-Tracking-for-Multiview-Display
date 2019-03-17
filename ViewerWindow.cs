@@ -38,7 +38,8 @@ namespace DF_FaceTracking.cs
             //string filepath = "F:/Teddy_parallel/Bottom camera/Before/DSC01214.jpg";
             float viewingAngle,degreePerImage;
             viewingAngle = 15 * 2;
-            degreePerImage = viewingAngle / 65;
+            int totalImage = 65;
+            degreePerImage = viewingAngle / totalImage;
 
             //richTextBox1.Text= yaw.ToString();
             
@@ -52,11 +53,11 @@ namespace DF_FaceTracking.cs
                 imageNumber = (int)(yaw / degreePerImage);
                 if (yaw==0)
                 {
-                    imageNumber = 32; //Total Number of horizontal view divided by two.
+                    imageNumber = (totalImage/2); //Total Number of horizontal view divided by two.
                 }
                 else
                 {
-                    imageNumber = 32 + imageNumber;
+                    imageNumber = (totalImage/2) + imageNumber;
                 }
                 
                 //ImageViewer(filepath);
@@ -68,7 +69,7 @@ namespace DF_FaceTracking.cs
             }
             else if (yaw > 15) // Check wheather it is out of range in Right side
             {
-                imageNumber = 64;
+                imageNumber = totalImage-1;
             }
             else
             { }
