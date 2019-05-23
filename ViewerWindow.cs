@@ -14,8 +14,8 @@ namespace DF_FaceTracking.cs
 
     public partial class ViewerWindow : Form
     {
-        int GlobalImageNumber;
-        string ComboVal="BelleBall";
+        int GlobalImageNumber=75;
+        string ComboVal="Elephant\\150";
 
         public ViewerWindow()
         {
@@ -38,7 +38,7 @@ namespace DF_FaceTracking.cs
             //string filepath = "F:/Teddy_parallel/Bottom camera/Before/DSC01214.jpg";
             float viewingAngle,degreePerImage;
             viewingAngle = 15 * 2;
-            int totalImage = 65;
+            int totalImage = 145;
             degreePerImage = viewingAngle / totalImage;
 
             //richTextBox1.Text= yaw.ToString();
@@ -65,18 +65,20 @@ namespace DF_FaceTracking.cs
             }
             else if(-15 > yaw) // Check wheather it is out of range in left side
             {
-                imageNumber = 0;
+                imageNumber = 146; // To display black image
+                //imageNumber = 0;
             }
             else if (yaw > 15) // Check wheather it is out of range in Right side
             {
-                imageNumber = totalImage-1;
+                imageNumber = 146; // To display black image
+                //imageNumber = totalImage;
             }
             else
             { }
 
 
             /*
-             * Generating File File number for vertical one view,
+             * Generating File number for vertical one view,
              * */
             int VerticalImageNumber = 0;
             /*
@@ -94,19 +96,47 @@ namespace DF_FaceTracking.cs
                 VerticalImageNumber = 1;
             }
             */
+            
             if(imageNumber!=GlobalImageNumber) // Check whether the state is idle or not
             {
+                /*
+                 * It enables the looped image viewer
+                 * 
+                if(imageNumber>=GlobalImageNumber)
+                {
+                    for(int i= imageNumber; i>= GlobalImageNumber; i--)
+                    {
+                        
+                        ImageViewer(GenerateFilePath(i, VerticalImageNumber));
+                        Thread.Sleep(100);
+                        label1.Text = "IF " + GenerateFilePath(i, VerticalImageNumber)+ i.ToString();
+                    }
+                }
+                else
+                {
+                    for (int i = GlobalImageNumber; i >= imageNumber; i--)
+                    {
+
+                        ImageViewer(GenerateFilePath(i, VerticalImageNumber));
+                        Thread.Sleep(100);
+                        label1.Text = "ELSE " + GenerateFilePath( i, VerticalImageNumber) + " "+i.ToString();
+
+                    }    
+                }
+                */
                 ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber));
+
+                // GlobalImageNumber = imageNumber;
             }
-                
-         
-            
+             
+            //ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber));
+
             //richTextBox1.Text = "Degree Per Image: " + degreePerImage + "Yaw: " + yaw + " Pitch:"+pitch+" Image Number: " + imageNumber + "Vertical Im Num: "+VerticalImageNumber+" Original :" + degreePerImage * yaw+" Path"+ GenerateFilePath(imageNumber,VerticalImageNumber);
             label1.Text = "Degree Per Image: " + degreePerImage + " Yaw: " + yaw + " Pitch:" + pitch + "Horizontal Image Number: " + imageNumber +" "+GlobalImageNumber+ " Vertical Image Number: " + VerticalImageNumber +" Image Path: " + GenerateFilePath(imageNumber, VerticalImageNumber);
 
         }
 
-
+        /*
         public string GenerateFilePath(int imageNumber, int VerticalImageNumber)
         {
             int NormalizedImgNumber;
@@ -123,8 +153,19 @@ namespace DF_FaceTracking.cs
             }
             return FolderBasePath+ VerticalImageNumber+"-" + NormalizedImgNumber + ".jpg";
         }
+        */
+
+        // This function is to generate filepath
+        public string GenerateFilePath(int imageNumber, int VerticalImageNumber)
+        {
+            string FolderBasePath = "C:\\StereoMultiviewImage\\" + ComboVal + "\\14\\";
+            GlobalImageNumber = imageNumber;
+
+            return FolderBasePath + VerticalImageNumber + "-" + imageNumber + ".jpg";
+        }
 
 
+        // This Function is to Display the image in window
         public void ImageViewer(string filepath)
         {
             try

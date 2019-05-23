@@ -69,6 +69,7 @@
             this.label1.Size = new System.Drawing.Size(53, 21);
             this.label1.TabIndex = 3;
             this.label1.Text = "label1";
+            this.label1.Visible = false;
             // 
             // comboBox1
             // 
@@ -84,6 +85,7 @@
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 4;
             this.comboBox1.Text = "Select Object";
+            this.comboBox1.Visible = false;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // ViewerWindow

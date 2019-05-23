@@ -52,6 +52,7 @@ namespace DF_FaceTracking.cs
         private static ToolStripMenuItem m_moduleMenuItem;
         private const int LandmarkAlignment = -3;
         private const int DefaultNumberOfFaces = 4;
+        bool faceregistered = false;
         
 
 
@@ -462,8 +463,6 @@ namespace DF_FaceTracking.cs
             private static readonly float DefaultIvcamFps = 30f;
         }
 
-
-
         private void PopulateModuleMenu()
         {
             var desc = new PXCMSession.ImplDesc();
@@ -584,10 +583,12 @@ namespace DF_FaceTracking.cs
             var thread = new Thread(DoTracking);
             thread.Start();
 
+            /*
             ViewerWindow vw = new ViewerWindow();
             this.SendFaceValue += new SendFaceData(vw.ReceiveFaceData);
             //SendFaceValue(GetFaceData());
-            vw.Show();
+            //vw.Show();
+            */
         }
 
         private string GetFaceData()
@@ -749,8 +750,7 @@ namespace DF_FaceTracking.cs
 
         public void UpdatePanel()
         {
-            Panel2.Invoke(new UpdatePanelDelegate(() => Panel2.Invalidate()));
-            
+            Panel2.Invoke(new UpdatePanelDelegate(() => Panel2.Invalidate()));  
         }
 
         public void DrawBitmap(Bitmap picture)
@@ -771,7 +771,7 @@ namespace DF_FaceTracking.cs
 
             for (var i = 0; i < moduleOutput.QueryNumberOfDetectedFaces(); i++)
             {
-                PXCMFaceData.Face face = moduleOutput.QueryFaceByIndex(i);
+                PXCMFaceData.Face face = moduleOutput.QueryFaceByIndex(i); // Use i if you want to track multiple face
                 if (face == null)
                 {
                     throw new Exception("DrawGraphics::PXCMFaceData.Face null");
@@ -794,6 +794,10 @@ namespace DF_FaceTracking.cs
         private void RegisterUser_Click(object sender, EventArgs e)
         {
             Register = true;
+            ViewerWindow vw = new ViewerWindow();
+            this.SendFaceValue += new SendFaceData(vw.ReceiveFaceData);
+            //SendFaceValue(GetFaceData());
+            vw.Show();
         }
 
         private void UnregisterUser_Click(object sender, EventArgs e)
@@ -927,56 +931,62 @@ namespace DF_FaceTracking.cs
 
         public void DrawLocation(PXCMFaceData.Face face)
         {
-            Debug.Assert(face != null);
-            if (m_bitmap == null || !Detection.Checked) return;
-
-            PXCMFaceData.DetectionData detection = face.QueryDetection();
-            if (detection == null)
-                return;
-
-            lock (m_bitmapLock)
+            if (isRegisteredDetected(face))
             {
-                using (Graphics graphics = Graphics.FromImage(m_bitmap))
-                using (var pen = new Pen(m_faceTextOrganizer.Colour, 3.0f))
-                using (var brush = new SolidBrush(m_faceTextOrganizer.Colour))
-                using (var font = new Font(FontFamily.GenericMonospace, m_faceTextOrganizer.FontSize, FontStyle.Bold))
+                Debug.Assert(face != null);
+                if (m_bitmap == null || !Detection.Checked) return;
+
+                PXCMFaceData.DetectionData detection = face.QueryDetection();
+                if (detection == null)
+                    return;
+
+                lock (m_bitmapLock)
                 {
-                    graphics.DrawRectangle(pen, m_faceTextOrganizer.RectangleLocation);
-                    String faceId = String.Format("Face ID: {0}",
-                        face.QueryUserID().ToString(CultureInfo.InvariantCulture));
-                    graphics.DrawString(faceId, font, brush, m_faceTextOrganizer.FaceIdLocation);
+                    using (Graphics graphics = Graphics.FromImage(m_bitmap))
+                    using (var pen = new Pen(m_faceTextOrganizer.Colour, 3.0f))
+                    using (var brush = new SolidBrush(m_faceTextOrganizer.Colour))
+                    using (var font = new Font(FontFamily.GenericMonospace, m_faceTextOrganizer.FontSize, FontStyle.Bold))
+                    {
+                        graphics.DrawRectangle(pen, m_faceTextOrganizer.RectangleLocation);
+                        String faceId = String.Format("Face ID: {0}",
+                            face.QueryUserID().ToString(CultureInfo.InvariantCulture));
+                        graphics.DrawString(faceId, font, brush, m_faceTextOrganizer.FaceIdLocation);
+                    }
                 }
             }
         }
 
         public void DrawLandmark(PXCMFaceData.Face face)
         {
-            Debug.Assert(face != null);
-            PXCMFaceData.LandmarksData landmarks = face.QueryLandmarks();
-            if (m_bitmap == null || !Landmarks.Checked || landmarks == null) return;
-
-            lock (m_bitmapLock)
+            if (isRegisteredDetected(face))
             {
-                using (Graphics graphics = Graphics.FromImage(m_bitmap))
-                using (var brush = new SolidBrush(Color.White))
-                using (var lowConfidenceBrush = new SolidBrush(Color.Red))
-                using (var font = new Font(FontFamily.GenericMonospace, m_faceTextOrganizer.FontSize, FontStyle.Bold))
+                Debug.Assert(face != null);
+                PXCMFaceData.LandmarksData landmarks = face.QueryLandmarks();
+                if (m_bitmap == null || !Landmarks.Checked || landmarks == null) return;
+
+                lock (m_bitmapLock)
                 {
-                    PXCMFaceData.LandmarkPoint[] points;
-                    bool res = landmarks.QueryPoints(out points);
-                    Debug.Assert(res);
-
-                    var point = new PointF();
-
-                    foreach (PXCMFaceData.LandmarkPoint landmark in points)
+                    using (Graphics graphics = Graphics.FromImage(m_bitmap))
+                    using (var brush = new SolidBrush(Color.White))
+                    using (var lowConfidenceBrush = new SolidBrush(Color.Red))
+                    using (var font = new Font(FontFamily.GenericMonospace, m_faceTextOrganizer.FontSize, FontStyle.Bold))
                     {
-                        point.X = landmark.image.x + LandmarkAlignment;
-                        point.Y = landmark.image.y + LandmarkAlignment;
+                        PXCMFaceData.LandmarkPoint[] points;
+                        bool res = landmarks.QueryPoints(out points);
+                        Debug.Assert(res);
 
-                        if (landmark.confidenceImage == 0)
-                            graphics.DrawString("x", font, lowConfidenceBrush, point);
-                        else
-                            graphics.DrawString("•", font, brush, point);
+                        var point = new PointF();
+
+                        foreach (PXCMFaceData.LandmarkPoint landmark in points)
+                        {
+                            point.X = landmark.image.x + LandmarkAlignment;
+                            point.Y = landmark.image.y + LandmarkAlignment;
+
+                            if (landmark.confidenceImage == 0)
+                                graphics.DrawString("x", font, lowConfidenceBrush, point);
+                            else
+                                graphics.DrawString("•", font, brush, point);
+                        }
                     }
                 }
             }
@@ -992,40 +1002,70 @@ namespace DF_FaceTracking.cs
                 return;
             }
             if (!Pose.Checked || !pdata.QueryPoseAngles(out poseAngles)) return;
-            //SendFaceValue(FaceData);
-            lock (m_bitmapLock)
+
+            if (isRegisteredDetected(face)) // Main condition for fixed head
             {
-                using (Graphics graphics = Graphics.FromImage(m_bitmap))
-                using (var brush = new SolidBrush(m_faceTextOrganizer.Colour))
-                using (var font = new Font(FontFamily.GenericMonospace, m_faceTextOrganizer.FontSize, FontStyle.Bold))
+                //SendFaceValue(FaceData);
+                lock (m_bitmapLock)
                 {
-                    string yawText = String.Format("Yaw = {0}",
-                        Convert.ToInt32(poseAngles.yaw).ToString(CultureInfo.InvariantCulture));
-                    graphics.DrawString(yawText, font, brush, m_faceTextOrganizer.PoseLocation.X,
-                        m_faceTextOrganizer.PoseLocation.Y);
+                    using (Graphics graphics = Graphics.FromImage(m_bitmap))
+                    using (var brush = new SolidBrush(m_faceTextOrganizer.Colour))
+                    using (var font = new Font(FontFamily.GenericMonospace, m_faceTextOrganizer.FontSize, FontStyle.Bold))
+                    {
+                        string yawText = String.Format("Yaw = {0}",
+                            Convert.ToInt32(poseAngles.yaw).ToString(CultureInfo.InvariantCulture));
+                        graphics.DrawString(yawText, font, brush, m_faceTextOrganizer.PoseLocation.X,
+                            m_faceTextOrganizer.PoseLocation.Y);
 
-                    string pitchText = String.Format("Pitch = {0}",
-                        Convert.ToInt32(poseAngles.pitch).ToString(CultureInfo.InvariantCulture));
-                    graphics.DrawString(pitchText, font, brush, m_faceTextOrganizer.PoseLocation.X,
-                        m_faceTextOrganizer.PoseLocation.Y + m_faceTextOrganizer.FontSize);
+                        string pitchText = String.Format("Pitch = {0}",
+                            Convert.ToInt32(poseAngles.pitch).ToString(CultureInfo.InvariantCulture));
+                        graphics.DrawString(pitchText, font, brush, m_faceTextOrganizer.PoseLocation.X,
+                            m_faceTextOrganizer.PoseLocation.Y + m_faceTextOrganizer.FontSize);
 
-                    string rollText = String.Format("Roll = {0}",
-                        Convert.ToInt32(poseAngles.roll).ToString(CultureInfo.InvariantCulture));
-                    graphics.DrawString(rollText, font, brush, m_faceTextOrganizer.PoseLocation.X,
-                        m_faceTextOrganizer.PoseLocation.Y + 2 * m_faceTextOrganizer.FontSize);
+                        string rollText = String.Format("Roll = {0}",
+                            Convert.ToInt32(poseAngles.roll).ToString(CultureInfo.InvariantCulture));
+                        graphics.DrawString(rollText, font, brush, m_faceTextOrganizer.PoseLocation.X,
+                            m_faceTextOrganizer.PoseLocation.Y + 2 * m_faceTextOrganizer.FontSize);
 
-                    /*
-                     * Invoking and Sending Value to the Viewer Window form
-                     * */
-                    //SendFaceValue(poseAngles.yaw.ToString());
-                    FaceDataValue = poseAngles.yaw.ToString();
-                    
-                    //SendFaceData sfdd = new SendFaceData(DrawPose);
-                    //this.Invoke(sfdd, new object[] { poseAngles.yaw.ToString() });
-                    Invoke(new SendFaceData(SendFaceValue), new Object[] { (poseAngles.yaw), (poseAngles.pitch) });
-                    Thread.Sleep(1);
+                        /*
+                         * Invoking and Sending Value to the Viewer Window form
+                         * */
+                        //SendFaceValue(poseAngles.yaw.ToString());
+                        FaceDataValue = poseAngles.yaw.ToString();
+
+                        //SendFaceData sfdd = new SendFaceData(DrawPose);
+                        //this.Invoke(sfdd, new object[] { poseAngles.yaw.ToString() });
+                            Invoke(new SendFaceData(SendFaceValue), new Object[] { (poseAngles.yaw), (poseAngles.pitch) });
+                            Thread.Sleep(1); 
+                    }
                 }
             }
+        }
+
+        //function to detect the registered face
+        public bool isRegisteredDetected(PXCMFaceData.Face face)
+        {
+            bool isRegister = false;
+            // Condition for fixed head
+            PXCMFaceData.RecognitionData qrecognition = face.QueryRecognition();
+            if (qrecognition == null)
+            {
+                throw new Exception(" PXCMFaceData.RecognitionData null");
+            }
+            var userId = qrecognition.QueryUserID();
+
+            if (userId > 99)
+            {
+                isRegister = true;
+                faceregistered = true;
+            }   
+            else
+            {
+                isRegister = false;
+                faceregistered = false;
+            }
+        
+            return isRegister;
         }
 
         public void DrawExpressions(PXCMFaceData.Face face)
@@ -1253,19 +1293,19 @@ namespace DF_FaceTracking.cs
             m_moduleSettings["Detection"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 0 };
             m_moduleSettings["Landmarks"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 0 };
             m_moduleSettings["Pose"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 0 };
-            m_moduleSettings["Recognition"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 0 };
+            m_moduleSettings["Recognition"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 0 };
             m_moduleSettings["Expressions"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 0 };
             m_moduleSettings["Pulse"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 0 };
         }
 
         private void SetDefaultIvcamSettings()
         {
-            m_moduleSettings["Detection"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 4 };
-            m_moduleSettings["Landmarks"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 4 };
-            m_moduleSettings["Pose"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 4 };
-            m_moduleSettings["Recognition"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 4 };
-            m_moduleSettings["Expressions"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 4 };
-            m_moduleSettings["Pulse"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 4 };
+            m_moduleSettings["Detection"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 1 };
+            m_moduleSettings["Landmarks"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 1 };
+            m_moduleSettings["Pose"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 1 };
+            m_moduleSettings["Recognition"] = new ModuleSettings { IsEnabled = true, NumberOfFaces = 1 };
+            m_moduleSettings["Expressions"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 1 };
+            m_moduleSettings["Pulse"] = new ModuleSettings { IsEnabled = false, NumberOfFaces = 1 };
         }
 
         private void SetDefaultDs4Settings()
