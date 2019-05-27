@@ -27,6 +27,7 @@ namespace DF_FaceTracking.cs
             //richTextBox1.BringToFront();
             label1.BringToFront();
             button1.BringToFront();
+            //label2.TextAlign = ContentAlignment.MiddleCenter;
 
             //Make the label Transparent
             //label1.Parent = pictureBox1;
@@ -124,8 +125,8 @@ namespace DF_FaceTracking.cs
                     }    
                 }
                 */
-                ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber));
-
+                //ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber)); Ommited for display image number
+                label2.Text = imageNumber.ToString();
                 // GlobalImageNumber = imageNumber;
             }
              
