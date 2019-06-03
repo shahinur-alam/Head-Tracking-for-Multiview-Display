@@ -14,8 +14,11 @@ namespace DF_FaceTracking.cs
 
     public partial class ViewerWindow : Form
     {
-        int GlobalImageNumber=75;
+        int GlobalImageNumber;
+        int totalImage = 145;
         string ComboVal="Elephant\\150";
+        double threshold = .01;
+        float globalyaw = 0;
 
         public ViewerWindow()
         {
@@ -32,6 +35,11 @@ namespace DF_FaceTracking.cs
             //Make the label Transparent
             //label1.Parent = pictureBox1;
             //label1.BackColor = Color.Transparent;
+
+            numericUpDown1.Increment = .02m;
+            numericUpDown1.Minimum = 0;
+            numericUpDown1.Maximum = 2;
+            numericUpDown1.DecimalPlaces = 2;
         }
 
         public void ReceiveFaceData(float yaw, float pitch)
@@ -39,7 +47,7 @@ namespace DF_FaceTracking.cs
             //string filepath = "F:/Teddy_parallel/Bottom camera/Before/DSC01214.jpg";
             float viewingAngle,degreePerImage;
             viewingAngle = 15 * 2;
-            int totalImage = 145;
+            GlobalImageNumber = totalImage / 2;
             degreePerImage = viewingAngle / totalImage;
 
             //richTextBox1.Text= yaw.ToString();
@@ -66,12 +74,12 @@ namespace DF_FaceTracking.cs
             }
             else if(-15 > yaw) // Check wheather it is out of range in left side
             {
-                imageNumber = 146; // To display black image
+                imageNumber = totalImage+1; // To display black image
                 //imageNumber = 0;
             }
             else if (yaw > 15) // Check wheather it is out of range in Right side
             {
-                imageNumber = 146; // To display black image
+                imageNumber = totalImage+1; // To display black image
                 //imageNumber = totalImage;
             }
             else
@@ -97,39 +105,41 @@ namespace DF_FaceTracking.cs
                 VerticalImageNumber = 1;
             }
             */
-            
-            if(imageNumber!=GlobalImageNumber) // Check whether the state is idle or not
-            {
-                /*
-                 * It enables the looped image viewer
-                 * 
-                if(imageNumber>=GlobalImageNumber)
+            if(Math.Abs(globalyaw - yaw) >= threshold)
+            { 
+                if (imageNumber!=GlobalImageNumber) // Check whether the state is idle or not
                 {
-                    for(int i= imageNumber; i>= GlobalImageNumber; i--)
+                    /*
+                     * It enables the looped image viewer
+                     * 
+                    if(imageNumber>=GlobalImageNumber)
                     {
+                        for(int i= imageNumber; i>= GlobalImageNumber; i--)
+                        {
                         
-                        ImageViewer(GenerateFilePath(i, VerticalImageNumber));
-                        Thread.Sleep(100);
-                        label1.Text = "IF " + GenerateFilePath(i, VerticalImageNumber)+ i.ToString();
+                            ImageViewer(GenerateFilePath(i, VerticalImageNumber));
+                            Thread.Sleep(100);
+                            label1.Text = "IF " + GenerateFilePath(i, VerticalImageNumber)+ i.ToString();
+                        }
                     }
-                }
-                else
-                {
-                    for (int i = GlobalImageNumber; i >= imageNumber; i--)
+                    else
                     {
+                        for (int i = GlobalImageNumber; i >= imageNumber; i--)
+                        {
 
-                        ImageViewer(GenerateFilePath(i, VerticalImageNumber));
-                        Thread.Sleep(100);
-                        label1.Text = "ELSE " + GenerateFilePath( i, VerticalImageNumber) + " "+i.ToString();
+                            ImageViewer(GenerateFilePath(i, VerticalImageNumber));
+                            Thread.Sleep(100);
+                            label1.Text = "ELSE " + GenerateFilePath( i, VerticalImageNumber) + " "+i.ToString();
 
-                    }    
+                        }    
+                    }
+                    */
+                    //ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber)); Ommited for display image number
+                    label2.Text = imageNumber.ToString();
+                    GlobalImageNumber = imageNumber;
+                    globalyaw = yaw;
                 }
-                */
-                //ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber)); Ommited for display image number
-                label2.Text = imageNumber.ToString();
-                // GlobalImageNumber = imageNumber;
             }
-             
             //ImageViewer(GenerateFilePath(imageNumber, VerticalImageNumber));
 
             //richTextBox1.Text = "Degree Per Image: " + degreePerImage + "Yaw: " + yaw + " Pitch:"+pitch+" Image Number: " + imageNumber + "Vertical Im Num: "+VerticalImageNumber+" Original :" + degreePerImage * yaw+" Path"+ GenerateFilePath(imageNumber,VerticalImageNumber);
@@ -224,7 +234,32 @@ namespace DF_FaceTracking.cs
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboVal = comboBox1.Text;
+            //ComboVal = comboBox1.Text;
+            if(comboBox1.Text=="BelleBall")
+            {
+                ComboVal = "BelleBall";
+                totalImage = 66;
+            }
+            else if(comboBox1.Text == "BottleApple")
+            {
+                ComboVal = "BottleApple";
+                totalImage = 66;
+            }
+            else if(comboBox1.Text== "Teddy")
+            {
+                ComboVal = "Teddy";
+                totalImage = 66;
+            }
+            else if(comboBox1.Text=="Elephant")
+            {
+                ComboVal = "Elephant\\150";
+                totalImage = 145;
+            }
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            threshold = (double)numericUpDown1.Value;
         }
     }
 }
